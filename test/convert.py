@@ -1,7 +1,7 @@
 import json
 from urllib import parse
 
-from ..subtitle_utils import BccConvert
+from subtitle_utils import BccConvert
 
 path = "../test/3.srt"
 bcc = BccConvert().srt2bcc(files=path)

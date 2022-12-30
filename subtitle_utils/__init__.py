@@ -40,12 +40,15 @@ class _Converter(object):
                 strs: Union[str],
                 **kwargs
                 ):
-        result = None
-        try:
-            result = BccConvert().srt2bcc(files=strs, about=about)
-            result = json.dumps(result, ensure_ascii=False, indent=None)
-        except Exception as e:
-            logger.error(e)
+        result = BccConvert().srt2bcc(files=strs, about=about)
+        result = json.dumps(result, ensure_ascii=False, indent=None)
+        return result
+
+    def ass2srt(self,
+                files: Union[str],
+                **kwargs
+                ):
+        result = AssConvert().ass2srt(files=files)
         return result
 
 
@@ -55,6 +58,36 @@ class Returner(BaseModel):
     aft: str
     msg: str = "Unknown"
     data: str = None
+
+
+__kira = _Converter()
+
+_to_table = {
+    "2srt": {
+        "ass": __kira.ass2srt,
+    },
+    "2bcc": {
+        "srt": __kira.srt2bcc,
+    },
+    "2ass": {
+    },
+}
+
+
+def SeeAvailableMethods() -> list:
+    """
+    查询可用方法，返回功能列表
+    :return:
+    """
+    _method = []
+    for it in _to_table.keys():
+        _child = _to_table[it]
+        if not isinstance(_child, dict):
+            continue
+        _from = _child.keys()
+        for ti in _from:
+            _method.append(f"{ti}{it}")
+    return _method
 
 
 def FormatConverter(pre: str, aft: str,
@@ -70,17 +103,7 @@ def FormatConverter(pre: str, aft: str,
     :param files: 必须是文件绝对路径
     :return: class Returner
     """
-    __kira = _Converter()
-    _aft = f"to{aft}"
-    _to_table = {
-        "tosrt": {
-        },
-        "tobcc": {
-            "srt": __kira.srt2bcc,
-        },
-        "toass": {
-        },
-    }
+    _aft = f"2{aft}"
     if not strs and not files:
         return Returner(status=False, pre=pre, aft=aft, msg="Miss arg")
     # 检查类型

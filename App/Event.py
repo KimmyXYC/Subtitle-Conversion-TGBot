@@ -105,4 +105,19 @@ async def Convert(bot: AsyncTeleBot, message: types.Message, config) -> Any:
 
 
 async def Start(bot: AsyncTeleBot, message: types.Message, config):
-    await bot.reply_to(message, "发送SRT字幕文件")
+    await bot.reply_to(
+        message,
+        "Send the subtitle file with the format you need to convert in the caption (lowercase 3 letters)."
+    )
+
+
+async def Help(bot: AsyncTeleBot, message: types.Message, config):
+    method = subtitle_utils.SeeAvailableMethods()
+    _support = "\n".join(method)
+    _url = "https://github.com/KimmyXYC/SRT2BCC_TGBot"
+    _use = "Send the subtitle file with the format you need to convert in the caption (lowercase 3 letters)."
+    await bot.reply_to(
+        message,
+        f"-Multi-format subtitle converter-\n{_use}\nNow support\n{_support}\n\nBy {_url}",
+        disable_web_page_preview=True,
+    )

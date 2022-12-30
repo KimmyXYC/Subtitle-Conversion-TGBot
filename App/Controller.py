@@ -31,10 +31,12 @@ class BotRunner(object):
             asyncio_helper.proxy = self.proxy.url
             logger.success("Proxy Set")
 
-        @bot.message_handler(commands=["start", 'about'], chat_types=['private'])
+        @bot.message_handler(commands=["start", "help"], chat_types=['private'])
         async def handle_command(message):
             if "/start" in message.text:
                 await Event.Start(bot, message, _config)
+            elif "/help" in message.text:
+                await Event.Help(bot, message, _config)
 
         # 私聊事件捕获
         @bot.message_handler(content_types=['document'], chat_types=['private'])

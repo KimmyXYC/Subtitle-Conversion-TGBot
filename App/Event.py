@@ -11,7 +11,6 @@ from typing import Union
 import chardet
 from telebot import types, util
 from telebot.async_telebot import AsyncTeleBot
-from requests_toolbelt import MultipartEncoder
 
 import subtitle_utils
 

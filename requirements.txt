@@ -5,3 +5,5 @@ aiohttp
 loguru
 pysrt
 pyvtt
+chardet
+requests_toolbelt

@@ -6,9 +6,11 @@
 
 import re
 import os
-import json
-import pysrt
+
 import pyvtt
+import pysrt
+
+from typing import Union
 from datetime import datetime
 from loguru import logger
 import sys
@@ -18,8 +20,7 @@ handler_id = logger.add(sys.stderr, level="TRACE")
 
 
 class BccConvert(object):
-    def __init__(self, file_path: str):
-        self.filepath = file_path
+    def __init__(self):
         self.item = {
             "from": 0,
             "to": 0,
@@ -113,12 +114,16 @@ class BccConvert(object):
         _fix = self.merge_timeline(_origin)
         return _fix
 
-    def srt2bcc(self):
+    def srt2bcc(self, files: Union[str]):
         """
         srt2bcc 将 srt 转换为 bcc B站字幕格式
         :return:
         """
-        subs = pysrt.open(path=self.filepath)
+        path = files if files else ""
+        if os.path.exists(path):
+            subs = pysrt.open(path=files)
+        else:
+            subs = pysrt.from_string(source=files)
         bcc = {
             "font_size": 0.4,
             "font_color": "#FFFFFF",
@@ -129,8 +134,8 @@ class BccConvert(object):
         }
         return bcc if subs else {}
 
-    def vtt2bcc(self, threshold=0.1, word=True):
-        path = self.filepath if self.filepath else ""
+    def vtt2bcc(self, files, threshold=0.1, word=True):
+        path = files if files else ""
         if os.path.exists(path):
             subs = pyvtt.open(path)
         else:

@@ -1,0 +1,10 @@
+pyTelegramBotAPI
+rtoml
+pathlib
+aiohttp
+loguru
+pysrt
+pyvtt
+chardet
+requests_toolbelt
+pyasstosrt

@@ -190,7 +190,7 @@ class BccConvert(object):
         }
         return bcc if subs else {}
 
-    def vtt2bcc(self, files, threshold=0.1, word=True):
+    def vtt2bcc(self, files, threshold=0.1, word=True, about: str = None):
         path = files if files else ""
         if os.path.exists(path):
             subs = pyvtt.open(path)
@@ -274,13 +274,13 @@ class BccConvert(object):
         # NOTE 避免超出视频长度
         last = caption_list[-1]
         last["to"] = last.get("from") + 0.1
+        body = self.process_body(caption_list, about=about)
         bcc = {
             "font_size": 0.4,
             "font_color": "#FFFFFF",
             "background_alpha": 0.5,
             "background_color": "#9C27B0",
             "Stroke": "none",
-            "body": caption_list,
+            "body": body,
         }
-
         return bcc if subs else {}

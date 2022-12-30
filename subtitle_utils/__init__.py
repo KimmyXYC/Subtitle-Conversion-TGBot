@@ -39,15 +39,32 @@ class _Converter(object):
     def srt2bcc(self,
                 strs: Union[str],
                 **kwargs
-                ):
+                ) -> str:
         result = BccConvert().srt2bcc(files=strs, about=about)
+        result = json.dumps(result, ensure_ascii=False, indent=None)
+        return result
+
+    def vtt2bcc(self,
+                strs: Union[str],
+                **kwargs
+                ) -> str:
+        result = BccConvert().vtt2bcc(files=strs, about=about)
+        result = json.dumps(result, ensure_ascii=False, indent=None)
+        return result
+
+    def ass2bcc(self,
+                files: Union[str],
+                **kwargs
+                ) -> str:
+        result = AssConvert().ass2srt(files=files)
+        result = BccConvert().srt2bcc(files=result, about=about)
         result = json.dumps(result, ensure_ascii=False, indent=None)
         return result
 
     def ass2srt(self,
                 files: Union[str],
                 **kwargs
-                ):
+                ) -> str:
         result = AssConvert().ass2srt(files=files)
         return result
 
@@ -67,7 +84,9 @@ _to_table = {
         "ass": __kira.ass2srt,
     },
     "2bcc": {
+        "vtt": __kira.vtt2bcc,
         "srt": __kira.srt2bcc,
+        "ass": __kira.ass2bcc,
     },
     "2ass": {
     },

@@ -85,7 +85,7 @@ class BccConvert(object):
                     sub_title_n.append(it["content"])
             if rev:
                 sub_title_n = reversed(sub_title_n)
-            return "".join(sub_title_n)
+            return "\n".join(sub_title_n)
 
         # 开始遍历时间轴划分Start End
         tmp_cap = []

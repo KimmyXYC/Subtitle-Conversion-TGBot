@@ -1,4 +1,4 @@
-# SRT2BCC_TGBot
+# Subtitle Conversion TGBot
 
 多格式转换机器人，提供兼容管线模型并打包为库中。
 

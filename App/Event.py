@@ -114,7 +114,7 @@ async def Start(bot: AsyncTeleBot, message: types.Message, config):
 async def Help(bot: AsyncTeleBot, message: types.Message, config):
     method = subtitle_utils.SeeAvailableMethods()
     _support = "\n".join(method)
-    _url = "https://github.com/KimmyXYC/SRT2BCC_TGBot"
+    _url = "https://github.com/KimmyXYC/Subtitle-Conversion-TGBot"
     _use = "Send the subtitle file with the format you need to convert in the caption (lowercase 3 letters)."
     await bot.reply_to(
         message,

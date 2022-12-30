@@ -190,7 +190,7 @@ class BccConvert(object):
         }
         return bcc if subs else {}
 
-    def vtt2bcc(self, files, threshold=0.1, word=True):
+    def vtt2bcc(self, files, threshold=0.1, word=True, about: str = None):
         path = files if files else ""
         if os.path.exists(path):
             subs = pyvtt.open(path)
@@ -274,13 +274,39 @@ class BccConvert(object):
         # NOTE 避免超出视频长度
         last = caption_list[-1]
         last["to"] = last.get("from") + 0.1
+        body = self.process_body(caption_list, about=about)
         bcc = {
             "font_size": 0.4,
             "font_color": "#FFFFFF",
             "background_alpha": 0.5,
             "background_color": "#9C27B0",
             "Stroke": "none",
-            "body": caption_list,
+            "body": body,
         }
-
         return bcc if subs else {}
+
+
+"""
+# 部分原始代码协议:https://github.com/FXTD-ODYSSEY/bilibili-subtile-uploader/blob/main/LICENSE
+MIT License
+
+Copyright (c) 2020 智伤帝
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""

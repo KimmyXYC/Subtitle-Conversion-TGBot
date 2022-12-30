@@ -32,6 +32,7 @@ class BccConvert(object):
         """
         防止时间码重合，压扁时间轴
         :param time_line:
+        :param additive: 附加字幕
         :return:
         """
         # 制作爆破点
@@ -51,9 +52,14 @@ class BccConvert(object):
         # 查找当前点的字幕。
         def sub_title_now(dot: float):
             sub_title_n = []
+            rev = False
             for it in time_line:
                 if it["from"] <= dot < it["to"]:
+                    if "字幕" in it["content"] and len(it["content"]) > 7:
+                        rev = True
                     sub_title_n.append(it["content"])
+            if rev:
+                sub_title_n = reversed(sub_title_n)
             return "\n".join(sub_title_n)
 
         # 开始遍历时间轴划分Start End
@@ -101,8 +107,16 @@ class BccConvert(object):
 
         return merge(_result)
 
-    def process_body(self, subs):
-        _origin = [
+    def process_body(self, subs, about: str = None):
+        _origin = []
+        if about:
+            _origin.append({
+                "from": 0.0,
+                "to": 5,
+                "location": 2,
+                "content": about,
+            })
+        _origin.extend([
             {
                 "from": sub.start.ordinal / 1000,
                 "to": sub.end.ordinal / 1000,
@@ -110,11 +124,11 @@ class BccConvert(object):
                 "content": sub.text,
             }
             for sub in subs
-        ]
+        ])
         _fix = self.merge_timeline(_origin)
         return _fix
 
-    def srt2bcc(self, files: Union[str]):
+    def srt2bcc(self, files: Union[str], about: str = None):
         """
         srt2bcc 将 srt 转换为 bcc B站字幕格式
         :return:
@@ -124,13 +138,14 @@ class BccConvert(object):
             subs = pysrt.open(path=files)
         else:
             subs = pysrt.from_string(source=files)
+        body = self.process_body(subs, about=about)
         bcc = {
             "font_size": 0.4,
             "font_color": "#FFFFFF",
             "background_alpha": 0.5,
             "background_color": "#9C27B0",
             "Stroke": "none",
-            "body": self.process_body(subs)
+            "body": body
         }
         return bcc if subs else {}
 

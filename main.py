@@ -17,6 +17,6 @@ logger.add(sink='run.log',
            rotation="20 MB",
            enqueue=True)
 
-config = ReadConfig().parseFile(str(Path.cwd()) + "/Config/app.toml")
+config = ReadConfig().parseFile(str(Path.cwd()) + "/Config/app.toml", toObj=True)
 App = BotRunner(config)
 App.run()

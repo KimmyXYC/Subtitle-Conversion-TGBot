@@ -64,11 +64,7 @@ class ReadConfig(object):
     def get(self):
         return self.config
 
-    def parseFile(self, paths):
+    def parseFile(self, paths: str, toObj: bool = False):
         data = rtoml.load(open(paths, 'r'))
-        self.config = Tool().dictToObj(data)
-        return self.config
-
-    def parseDict(self, data):
-        self.config = Tool().dictToObj(data)
+        self.config = Tool().dictToObj(data) if toObj else data
         return self.config

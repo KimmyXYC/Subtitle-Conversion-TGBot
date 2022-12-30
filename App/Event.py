@@ -18,13 +18,14 @@ import subtitle_utils
 from loguru import logger
 
 from utils.Base import random_filename, filter_str
+from utils.Setting import get_app_config
 
 
 def convert2bcc(file_type: str, files: Union[str]):
     result = None
     try:
         if file_type == ".srt":
-            result = subtitle_utils.BccConvert().srt2bcc(files=files)
+            result = subtitle_utils.BccConvert().srt2bcc(files=files, about=get_app_config()["Info"]["about"])
             result = json.dumps(result, ensure_ascii=False, indent=4)
     except Exception as e:
         logger.error(e)

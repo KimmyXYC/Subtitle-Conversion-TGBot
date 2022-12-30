@@ -27,27 +27,78 @@ class BccConvert(object):
             "content": "",
         }
 
-    def merge_timeline(self, list1):
-        # 定义一个字典用于存储新生成的list元素
-        result = {}
-        for item in list1:
-            # 判断该元素是否在字典中存在
-            if item["from"] in result.keys():
-                # 如果存在，则修改to和content
-                result[item["from"]]["to"] = max(result[item["from"]]["to"], item["to"])
-                result[item["from"]]["content"] += "/n" + item["content"]
+    def merge_timeline(self, time_line: list):
+        """
+        防止时间码重合，压扁时间轴
+        :param time_line:
+        :return:
+        """
+        # 制作爆破点
+        _time_dot = {}
+        for item in time_line:
+            _start = item["from"]
+            _end = item["to"]
+            _content = item["content"]
+            _uid = _start + _end
+            import uuid
+            uid1 = uuid.uuid1()
+            uid2 = uuid.uuid1()
+            uid = uuid.uuid1()
+            _time_dot[uid1.hex] = {"time": _start, "type": "start", "content": _content, "group": uid}
+            _time_dot[uid2.hex] = {"time": _end, "type": "end", "content": _content, "group": uid}
+
+        # 查找当前点的字幕。
+        def sub_title_now(dot: float):
+            sub_title_n = []
+            for it in time_line:
+                if it["from"] <= dot < it["to"]:
+                    sub_title_n.append(it["content"])
+            return "\n".join(sub_title_n)
+
+        # 开始遍历时间轴划分Start End
+        tmp_cap = []
+        _sorted_timeline = sorted(_time_dot.items(), key=lambda x: x[1]["time"], reverse=False)
+        for key, time in _sorted_timeline:
+            _type = time["type"]
+            _time = time["time"]
+            _group = time["group"]
+            _content = time["content"]
+            tmp_cap.append(_time)
+        _result = []
+        for dot in range(0, len(tmp_cap) - 1):
+            _now = tmp_cap[dot]
+            _next = tmp_cap[dot + 1]
+            _text = sub_title_now(_now)
+            if not _text:
+                continue
+            _from = _now
+            _to = _next
+            _item = {
+                "from": _from,
+                "to": _to,
+                "location": 2,
+                "content": _text,
+            }
+            _result.append(_item)
+
+        # 归并内容
+        def merge(timeline: list):
+            merged = False
+            for it in range(0, len(timeline) - 1):
+                now = timeline[it]
+                ext = timeline[it + 1]
+                if now["to"] == ext["from"]:
+                    if now["content"] == ext["content"]:
+                        merged = True
+                        now["to"] = ext["to"]
+                        timeline.remove(ext)
+                        break
+            if merged:
+                return merge(timeline)
             else:
-                # 如果不存在就直接添加
-                result[item["from"]] = {
-                    "from": item["from"],
-                    "to": item["to"],
-                    "location": item["location"],
-                    "content": item["content"]
-                }
-        final = []
-        for key in result.keys():
-            final.append(result[key])
-        return final
+                return timeline
+
+        return merge(_result)
 
     def process_body(self, subs):
         _origin = [
@@ -59,7 +110,6 @@ class BccConvert(object):
             }
             for sub in subs
         ]
-        print(_origin)
         _fix = self.merge_timeline(_origin)
         return _fix
 

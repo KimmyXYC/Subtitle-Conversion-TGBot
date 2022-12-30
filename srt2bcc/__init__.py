@@ -27,19 +27,27 @@ class BccConvert(object):
             "content": "",
         }
 
-    def merge_timeline(self, bcc_raw: list):
-        merged_list = []
-        bcc_raw.sort(key=lambda x: x['from'])
-        temp = bcc_raw[0]
-        for i in range(1, len(bcc_raw)):
-            if bcc_raw[i]['from'] >= temp['to']:
-                merged_list.append(temp)
-                temp = bcc_raw[i]
+    def merge_timeline(self, list1):
+        # 定义一个字典用于存储新生成的list元素
+        result = {}
+        for item in list1:
+            # 判断该元素是否在字典中存在
+            if item["from"] in result.keys():
+                # 如果存在，则修改to和content
+                result[item["from"]]["to"] = max(result[item["from"]]["to"], item["to"])
+                result[item["from"]]["content"] += "/n" + item["content"]
             else:
-                temp['to'] = max(bcc_raw[i]['to'], temp['to'])
-                temp['content'] += "\n" + bcc_raw[i]['content']
-        merged_list.append(temp)
-        return merged_list
+                # 如果不存在就直接添加
+                result[item["from"]] = {
+                    "from": item["from"],
+                    "to": item["to"],
+                    "location": item["location"],
+                    "content": item["content"]
+                }
+        final = []
+        for key in result.keys():
+            final.append(result[key])
+        return final
 
     def process_body(self, subs):
         _origin = [

@@ -3,3 +3,5 @@ rtoml
 pathlib
 aiohttp
 loguru
+pysrt
+pyvtt

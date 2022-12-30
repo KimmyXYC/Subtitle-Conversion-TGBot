@@ -39,7 +39,7 @@ class BotRunner(object):
         # 私聊事件捕获
         @bot.message_handler(content_types=['document'], chat_types=['private'])
         async def handle_private_msg(message):
-            await Event.ToBcc(bot, message, _config)
+            await Event.Convert(bot, message, _config)
 
         from telebot import asyncio_filters
         bot.add_custom_filter(asyncio_filters.IsAdminFilter(bot))

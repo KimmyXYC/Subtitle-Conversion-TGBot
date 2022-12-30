@@ -8,6 +8,7 @@ import re
 import uuid
 
 import rtoml
+from pydantic import BaseModel
 
 
 def random_filename(filename):
@@ -68,3 +69,11 @@ class ReadConfig(object):
         data = rtoml.load(open(paths, 'r'))
         self.config = Tool().dictToObj(data) if toObj else data
         return self.config
+
+
+class FileInfo(BaseModel):
+    status: bool = False
+    type: str
+    msg: str = "Unknown"
+    result: str = None
+    size: int

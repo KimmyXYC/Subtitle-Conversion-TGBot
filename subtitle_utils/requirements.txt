@@ -1,0 +1,8 @@
+pathlib
+loguru
+pysrt
+pyvtt
+chardet
+requests_toolbelt
+pyasstosrt
+pydantic

@@ -25,7 +25,7 @@ def convert2bcc(file_type: str, files: Union[str]):
     try:
         if file_type == ".srt":
             result = subtitle_utils.BccConvert().srt2bcc(files=files, about=get_app_config()["Info"]["about"])
-            result = json.dumps(result, ensure_ascii=False, indent=4)
+            result = json.dumps(result, ensure_ascii=False, indent=None)
     except Exception as e:
         logger.error(e)
     return result

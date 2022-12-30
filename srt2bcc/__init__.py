@@ -28,59 +28,18 @@ class BccConvert(object):
         }
 
     def merge_timeline(self, bcc_raw: list):
-        _compiles = []
-        if len(bcc_raw) < 2:
-            return bcc_raw
-        _all_right = False
-        _index = 0
-        while not _all_right:
-            for it in range(_index, len(bcc_raw) - 1):
-                _all_right = True
-                _index = it
-                item = bcc_raw[it]
-                next_item = bcc_raw[it + 1]
-                end_time = item["to"]
-                next_start_time = next_item["from"]
-                # 下一个对象的起始掉到本对象界中，就生产新对象并交换初始化
-                if next_start_time < end_time:
-                    _start = bcc_raw[it]["from"]
-                    bcc_raw[it]["to"] = next_start_time
-                    bcc_raw[it + 1]["from"] = end_time
-                    if _start != next_start_time:
-                        cont = f"{next_item['content']}\n{item['content']}"
-                        _compiles.append(bcc_raw[it])
-                        logger.trace(bcc_raw[it])
-                    else:
-                        cont = f"{item['content']}\n{next_item['content']}"
-                    _compiles.append(
-                        {"from": next_start_time,
-                         "to": end_time,
-                         "location": 2,
-                         "content": cont
-                         }
-                    )
-                    logger.trace({"from": next_start_time,
-                                  "to": end_time,
-                                  "location": 2,
-                                  "content": cont
-                                  })
-                    _all_right = False
-                    break
-                elif next_start_time == end_time:
-                else:
-                    if _compiles:
-                        if bcc_raw[it]["from"] >= _compiles[-1]["to"]:
-                            _compiles.append(bcc_raw[it])
-                            logger.trace(bcc_raw[it])
-                    else:
-                        _compiles.append(bcc_raw[it])
-                        logger.trace(bcc_raw[it])
-        _compiles.append(bcc_raw[len(bcc_raw) - 1])
-        _return = []
-        for it in _compiles:
-            _return.append(it)
-        print(_return)
-        return _return
+        merged_list = []
+        bcc_raw.sort(key=lambda x: x['from'])
+        temp = bcc_raw[0]
+        for i in range(1, len(bcc_raw)):
+            if bcc_raw[i]['from'] >= temp['to']:
+                merged_list.append(temp)
+                temp = bcc_raw[i]
+            else:
+                temp['to'] = max(bcc_raw[i]['to'], temp['to'])
+                temp['content'] += "\n" + bcc_raw[i]['content']
+        merged_list.append(temp)
+        return merged_list
 
     def process_body(self, subs):
         _origin = [
@@ -206,5 +165,3 @@ class BccConvert(object):
         }
 
         return bcc if subs else {}
-
-

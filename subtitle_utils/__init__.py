@@ -68,6 +68,14 @@ class _Converter(object):
         result = AssConvert().ass2srt(files=files)
         return result
 
+    def srt2ass(self,
+                strs: Union[str],
+                header: str = "",
+                **kwargs
+                ) -> str:
+        result = AssConvert().srt2ass(strs=strs, header=header)
+        return result
+
 
 class Returner(BaseModel):
     status: bool = False
@@ -89,6 +97,7 @@ _to_table = {
         "ass": __kira.ass2bcc,
     },
     "2ass": {
+        "srt": __kira.srt2ass,
     },
 }
 

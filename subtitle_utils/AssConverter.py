@@ -16,11 +16,16 @@ Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour,
 Style: Default,Arial,20,&H00FFFFFF,&HF0000000,&H00000000,&HF0000000,1,0,0,0,100,100,0,0.00,1,1,0,2,30,30,10,134
 
 [Events]
-Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text"""
+Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
+"""
 
     @staticmethod
     def srt_timestamps(content: str) -> list:
-        """ 获取时间轴存于字典中 """
+        """
+        获取时间轴
+        :param content: 字幕内容
+        :return: 时间戳
+        """
         timestamps = []
         for ts in re.findall(r'\d{2}:\d{2}:\d{2},\d{3}.+\d{2}:\d{2}:\d{2},\d{3}', content):
             ts = ts.split(' --> ')
@@ -29,7 +34,11 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
 
     @staticmethod
     def srt_subtitles(content: str) -> list:
-        # 通过分割时间轴获取字幕存储于列表中返回
+        """
+        分割时间轴
+        :param content: 字幕内容
+        :return: 字幕
+        """
         content = content.replace('\ufeff', '')
         _subtitles = re.split(r'\d{2}:\d{2}:\d{2},\d{3}.+\d{2}:\d{2}:\d{2},\d{3}', content)
         subtitles = []
@@ -41,6 +50,13 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
 
     @staticmethod
     def ass_content(timestamps: list, subtitles: list, header: str) -> str:
+        """
+        字幕转换
+        :param timestamps: 时间轴
+        :param subtitles: 字幕
+        :param header: 头
+        :return: 合成字幕
+        """
         content = header + '\n'
         body = {
             'dialogue': 'Dialogue: ',
@@ -53,15 +69,13 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
         }
         count = len(subtitles)
         for c in range(count):
-            start = timestamps[c][0]  # 获取当前字幕起始时间
+            start = timestamps[c][0]  # 字幕起始时间
             start = start[:1] + ',' + start[1:8] + '.' + start[-2:]
-            end = timestamps[c][1]  # 获取当前字幕结束时间
+            end = timestamps[c][1]  # 字幕结束时间
             end = end[1:8] + '.' + end[-2:]
             timeline = ','.join([start, end])  # 合成时间轴
-
-            subtitle = subtitles[c]  # 获取当前字幕
-
-            list2str = [  # 字幕列表格式化
+            subtitle = subtitles[c]  # 当前字幕
+            sub_tilte_n = [  # 字幕列表格式化
                 body['dialogue'] + timeline,
                 body['default'],
                 body['ntp'],
@@ -69,8 +83,7 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
                 body['0000'],
                 body['0000'] + ',',
                 subtitle]
-
-            content += ','.join(list2str)
+            content += ','.join(sub_tilte_n)
             content += '\n'
         return content
 

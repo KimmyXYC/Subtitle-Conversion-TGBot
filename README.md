@@ -1,6 +1,22 @@
+![cover](https://raw.githubusercontent.com/KimmyXYC/Subtitle-Conversion-TGBot/main/Data/cover.png)
+
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.7|8|9|10-green" alt="PYTHON" >
+</p>
+
 # Subtitle Conversion TGBot
 
-多格式转换机器人，提供兼容管线模型并打包为库中。
+多格式转换机器人，提供 ass2srt vtt2bcc srt2bcc ass2bcc 等转换。
+
+## Setup
+
+*Edit the robot's config*
+`Config/app.toml`
+
+Request a [botToken](https://t.me/BotFather)
+
+*Edit subtitle source information*
+`Config/config.toml`
 
 ## Use
 

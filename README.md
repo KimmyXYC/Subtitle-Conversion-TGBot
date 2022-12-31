@@ -1,7 +1,7 @@
-![cover](https://raw.githubusercontent.com/KimmyXYC/Subtitle-Conversion-TGBot/main/Data/cover.png)
+![cover](https://raw.githubusercontent.com/KimmyXYC/Subtitle-Conversion-TGBot/main/Data/cover.jpg)
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.7|8|9|10-green" alt="PYTHON" >
+  <img src="https://img.shields.io/badge/Python-3.7|8|9|10-green" alt="Python" >
 </p>
 
 # Subtitle Conversion TGBot

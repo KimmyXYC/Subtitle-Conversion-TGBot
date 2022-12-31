@@ -4,11 +4,8 @@
 # @Software: PyCharm
 # @Github    ：sudoskys
 import json
-import os
-from typing import Union
-
 import pathlib
-import pysrt
+from typing import Union
 from loguru import logger
 
 # Child
@@ -17,19 +14,6 @@ from .AssConverter import AssConvert
 from pydantic import BaseModel
 
 about = None
-
-
-class SrtParse(object):
-    def __init__(self):
-        pass
-
-    def parse(self, files):
-        path = files if files else ""
-        if os.path.exists(path):
-            subs = pysrt.open(path=files)
-        else:
-            subs = pysrt.from_string(source=files)
-        return subs
 
 
 class _Converter(object):

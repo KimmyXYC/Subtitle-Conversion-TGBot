@@ -7,6 +7,8 @@ import re
 from pathlib import Path
 from pyasstosrt import Subtitle
 
+from .utils import SrtParse
+
 
 class AssUtils(object):
     @staticmethod
@@ -19,37 +21,7 @@ Style: Default,Arial,20,&H00FFFFFF,&HF0000000,&H00000000,&HF0000000,1,0,0,0,100,
 Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
 """
 
-    @staticmethod
-    def srt_timestamps(content: str) -> list:
-        """
-        获取时间轴
-        :param content: 字幕内容
-        :return: 时间戳
-        """
-        timestamps = []
-        for ts in re.findall(r'\d{2}:\d{2}:\d{2},\d{3}.+\d{2}:\d{2}:\d{2},\d{3}', content):
-            ts = ts.split(' --> ')
-            timestamps.append(ts)
-        return timestamps
-
-    @staticmethod
-    def srt_subtitles(content: str) -> list:
-        """
-        分割时间轴
-        :param content: 字幕内容
-        :return: 字幕
-        """
-        content = content.replace('\ufeff', '')
-        _subtitles = re.split(r'\d{2}:\d{2}:\d{2},\d{3}.+\d{2}:\d{2}:\d{2},\d{3}', content)
-        subtitles = []
-        for s in range(1, len(_subtitles)):
-            subtitle = re.sub(r'(\r\n\r\n\d+\r\n)|(^\r\n)|(^\n)|(\n\n\d+\n)|(\u200e)', '', _subtitles[s])
-            subtitle = re.sub('(\r\n)|\n', ' ', subtitle)
-            subtitles.append(subtitle)
-        return subtitles
-
-    @staticmethod
-    def ass_content(timestamps: list, subtitles: list, header: str) -> str:
+    def ass_content(self, content, header: str) -> str:
         """
         字幕转换
         :param timestamps: 时间轴
@@ -57,6 +29,10 @@ Format: Layer, Start, End, Style, Actor, MarginL, MarginR, MarginV, Effect, Text
         :param header: 头
         :return: 合成字幕
         """
+        subs = SrtParse().parse(strs=content)
+        timestamps = [[str(sub.start), str(sub.end)] for sub in subs]
+        subtitles = [sub.text for sub in subs]
+        header = header if header else AssUtils.defultHeader()
         content = header + '\n'
         body = {
             'dialogue': 'Dialogue: ',
@@ -100,10 +76,7 @@ class AssConvert(object):
         return "".join(_result)
 
     def srt2ass(self, strs: str, header: str = "") -> str:
-        header = header if header else AssUtils.defultHeader()
-        timestamps = AssUtils.srt_timestamps(strs)
-        subtitles = AssUtils.srt_subtitles(strs)
-        content = AssUtils.ass_content(timestamps, subtitles, header)
+        content = AssUtils().ass_content(content=strs, header=header)
         return content
 
 # res = AssConvert().ass2srt(files="../test/sub.ass")

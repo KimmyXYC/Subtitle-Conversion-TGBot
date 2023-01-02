@@ -1,10 +1,3 @@
 pyTelegramBotAPI
 rtoml
-pathlib
-aiohttp
-loguru
-pysrt
-pyvtt
-chardet
-pyasstosrt
-pydantic
+subtitle-utils

@@ -19,8 +19,6 @@ from loguru import logger
 from utils.Base import random_filename, filter_str, FileInfo
 from utils.Setting import get_app_config
 
-subtitle_utils.about = get_app_config()["Info"]["about"]
-
 command_match = ["srt", "bcc", "ass", "vtt"]
 
 
@@ -73,6 +71,10 @@ async def Convert(bot: AsyncTeleBot, message: types.Message, config) -> Any:
         file_name = message.document.file_name
         if len(file_name) > 120:
             return "Too long...."
+        if ".tw" in file_name or ".tc" in file_name or "cht" in file_name:
+            subtitle_utils.about = get_app_config()["Info"]["about_tw"]
+        else:
+            subtitle_utils.about = get_app_config()["Info"]["about"]
         file_group = await GetFile(bot, message)
         file_group: FileInfo
         if not file_group.status:

@@ -1,3 +1,3 @@
 pyTelegramBotAPI
 rtoml
-subtitle-utils
+subtitle-utils<1.0.0
